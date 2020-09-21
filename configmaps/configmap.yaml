@@ -1,0 +1,12 @@
+  
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+  config.json: |
+    {
+      "environment" : "dev"
+    }
+# ran this:                             kubectl apply -f configmaps/configmap.yaml
+# but could have run this instead:      kubectl create configmap example-config --from-file ./golang/configs/config.json
