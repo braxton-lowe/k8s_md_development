@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deploy
+  labels:
+    app: example-app
+    test: test
+  annotations:
+    fluxcd.io/tag.example-app: semver:~1.0
+    fluxcd.io/automated: 'true'
+spec:
+  selector:
+    matchLabels:
+      app: example-app
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app
+        #########################
+        # before you have secrets set up, must build local docker image with:   docker build -t special_0920_golang . 
+        # in golang directory...and then also need to add that special tag to the image below!
+        image: ok_try_z_path_4_config #special_0920_golang used this before experimenting w/ volumes
+        imagePullPolicy: IfNotPresent
+        #########################
+        # image: aimvector/golang:1.0.0
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        # livenessProbe:
+        #   httpGet:
+        #     path: /status
+        #     port: 5000
+        #   initialDelaySeconds: 3
+        #   periodSeconds: 3
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+#NOTE: comment out `volumeMounts` section for configmap and\or secret guide
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /secretz/
+        - name: config-volume
+          mountPath: /configz/
+#NOTE: comment out `volumes` section for configmap and\or secret guide
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: mysecret
+      - name: config-volume
+        configMap:
+          name: example-config #name of our configmap object
