@@ -29,19 +29,19 @@ spec:
         #########################
         # before you have secrets set up, must build local docker image with:   docker build -t special_0920_golang . 
         # in golang directory...and then also need to add that special tag to the image below!
-        image: ok_try_z_path_4_config #special_0920_golang used this before experimenting w/ volumes
+        image: ok_try_z_path_4_config #special_0920_golang used this before experimenting w/ 'z' at end of volumes
         imagePullPolicy: IfNotPresent
         #########################
         # image: aimvector/golang:1.0.0
         # imagePullPolicy: Always
         ports:
         - containerPort: 5000
-        # livenessProbe:
-        #   httpGet:
-        #     path: /status
-        #     port: 5000
-        #   initialDelaySeconds: 3
-        #   periodSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: 5000
+          initialDelaySeconds: 3
+          periodSeconds: 3
         resources:
           requests:
             memory: "64Mi"
