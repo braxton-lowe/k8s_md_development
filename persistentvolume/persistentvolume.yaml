@@ -20,7 +20,8 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/mnt/data"
+    # path: "/mnt/data"
+    path: "/another_mnt/data"
 
 #try this later
 # apiVersion: v1
