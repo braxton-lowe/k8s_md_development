@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config-new
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: postgresdb2
+  POSTGRES_USER: pg_username2
+  POSTGRES_PASSWORD: admin123
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres
+  selector:
+    matchLabels:
+      app: postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:10.4
+          imagePullPolicy: "IfNotPresent"
+          ports:
+          - containerPort: 5432
+          envFrom:
+          - configMapRef:
+              name: postgres-config-new
+          volumeMounts:
+          - name: data-vol-path
+            mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: data-vol-path
+        persistentVolumeClaim:
+          claimName: example-claim
+        
+        # can try using these two lines and taking out "pvc" to see host mount better
+        # after rm -r from the OG pvc...i can only log in with postgres username...not the one defined above
+        # hostPath:
+        #   path: /Users/braxtonlowe/Documents/testing_pv_101          
+  
+  # TBD
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: example-local-claim
+  #   spec:
+  #     accessModes:
+  #     - ReadWriteOnce
+  #     storageClassName: local-storage
+  #     resources:
+  #       requests:
+  #         storage: 50Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      name: http
+      port: 5432
+      targetPort: 5432
+# kubectl -n postgres get pods      
+# kubectl -n postgres exec -it <POD> bash
+# psql --username=pg_username postgresdb
+# CREATE TABLE Brax_Table(ID INT PRIMARY KEY NOT NULL)
+# \dt
+# \q

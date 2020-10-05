@@ -1,0 +1,32 @@
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-claim
+spec:
+  storageClassName: hostpath
+
+  #trying another way
+  # storageClassName: manual
+
+  # another way
+  # storageClassName: local-storage
+
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+
+#try this later
+# kind: PersistentVolumeClaim
+# apiVersion: v1
+# metadata:
+#   name: example-claim
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   storageClassName: local-storage
+#   resources:
+#     requests:
+#       storage: 50Mi

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-volume
+  labels:
+    type: local
+spec:
+  #we use local node storage here!
+  #kubectl get storageclass
+  storageClassName: hostpath
+  
+    # another way
+#   # storageClassName: manual
+
+  # another way
+  # storageClassName: local-storage
+
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    # path: "/mnt/data"
+    path: "/another_mnt/data"
+
+#try this later
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: example-local-pv
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#   - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: local-storage
+#   local:
+#     path: /mnt/data
+#   nodeAffinity:
+#     required:
+#       nodeSelectorTerms:
+#       - matchExpressions:
+#         - key: kubernetes.io/hostname
+#           operator: In
+#           values:
+#           - docker-desktop
